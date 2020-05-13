@@ -1,0 +1,179 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  background: #C1EAFF;
+  background: linear-gradient(135deg, #EFF9FE 0%, #C1EAFF 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-size: 1em;
+}
+
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.btn {
+  border-radius: 50px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.875rem;
+  min-width: 180px;
+  overflow: hidden;
+  padding: 8px 24px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.8);
+  transition: all 0.25s;
+
+  &:before {
+    background: #fff;
+    border-radius: 100%;
+    bottom: 20px;
+    content: '';
+    height: 100%;
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    transform: translate(-50%, -5px);
+    transition: all 0.25s;
+    width: 150%;
+  }
+
+  &:hover {
+    &:before {
+      opacity: 0.15;
+      transform: translate(-50%, 0px);
+    }
+  }
+
+  &.btn-primary {
+    background: linear-gradient(180deg, #FFE24A 0%, #FAA321 100%);
+    box-shadow: 0px 4px 0px #9A6716, 0px 4px 8px rgba(39, 154, 224, 0.8), inset 0px 2px 0px rgba(255, 255, 255, 0.6), inset 0px -1px 2px rgba(0, 0, 0, 0.25);
+    color: #AC5D00;
+
+    &:hover {
+      box-shadow: 0px 4px 0px #9A6716, 0px 4px 16px rgba(39, 154, 224, 0.8), inset 0px 2px 0px rgba(255, 255, 255, 0.6), inset 0px -1px 2px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px rgba(39, 154, 224, 0.8), inset 0px 0px 8px rgba(0, 0, 0, 0.25);;
+      top: 4px;
+    }
+  }
+
+  &.btn-secondary {
+    background: linear-gradient(180deg, #85E9FF 0%, #0099FE 100%);;
+    box-shadow: 0px 4px 0px #0068B4, 0px 4px 8px rgba(39, 154, 224, 0.8), inset 0px 2px 0px rgba(255, 255, 255, 0.6), inset 0px -1px 2px rgba(0, 0, 0, 0.25);
+    color: #004F98;
+
+    &:hover {
+      box-shadow: 0px 4px 0px #0068B4, 0px 4px 16px rgba(39, 154, 224, 0.8), inset 0px 2px 0px rgba(255, 255, 255, 0.6), inset 0px -1px 2px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px rgba(39, 154, 224, 0.8), inset 0px 0px 8px rgba(0, 0, 0, 0.25);;
+      top: 4px;
+    }
+  }
+} // .btn
+
+.scene {
+  height: 100%;
+  width: 100%;
+
+  .coin {
+    background: transparent;
+    height: 100%;
+    position: relative;
+    transform: rotate(0deg);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    transition: transform 3s ease-out;
+    width: 100%;
+
+    &.spin {
+      transform: rotateY(720deg);
+    }
+
+    .coin-face {
+      align-items: center;
+      border-radius: 100%;
+      display: grid;
+      height: 100%;
+      position: absolute;
+      text-align: center;
+      width: 100%;
+
+      img {
+        margin: 0 auto;
+      }
+
+      .coin-highlight {
+        border-radius: 100%;
+        bottom: 0;
+        height: 100%;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        &:before {
+          background: #fff;
+          border-radius: 100%;
+          content: '';
+          height: 150%;
+          left: 50%;
+          opacity: 0.2;
+          position: absolute;
+          transform: translate(-75%, -90%);
+          transition: all 0.25s;
+          top: 50%;
+          width: 200%;
+          z-index: 1;
+        }
+      }
+    } // .coin-face
+
+    .coin-face--front {
+      background: linear-gradient(180deg, #35B6FF 0%, #003087 100%);
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
+      
+      img {
+        height: 50%;
+        width: auto;
+      }
+    }
+
+    .coin-face--back {
+      background: linear-gradient(180deg, #9AED2F 0%, #107C10 100%);
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.29), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
+      transform: rotateY(180deg);
+
+      img {
+        height: auto;
+        width: 60%;
+      }
+    }
+  } // .coin
+} // .scene
+
+@import 'home.scss';
