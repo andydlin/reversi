@@ -1,0 +1,39 @@
+.page {
+  main {
+    margin: 48px auto;
+    max-width: 800px;
+  }
+
+  nav {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    #logo {
+      height: auto;
+      max-width: 200px;
+    }
+
+    .main-links {
+      display: flex;
+      flex-direction: row-reverse;
+
+      li {
+        margin-left: 16px;
+      }
+    } // .main-links
+  } // nav
+
+  .content {
+    margin: 48px 0;
+
+    h1 {
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+      width: auto;
+    }
+  }
+} // #about

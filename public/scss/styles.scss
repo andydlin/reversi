@@ -3,18 +3,23 @@
 }
 
 html, body {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 
 body {
   background: #C1EAFF;
   background: linear-gradient(135deg, #EFF9FE 0%, #C1EAFF 100%);
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
   font-family: 'Montserrat', Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-size: 1em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #16436B;
 }
 
 ul, li {
@@ -62,6 +67,11 @@ ul, li {
     }
   }
 
+  &.btn-small {
+    font-size: 1.15rem;
+    min-width: 100px;
+  }
+
   &.btn-primary {
     background: linear-gradient(180deg, #FFE24A 0%, #FAA321 100%);
     box-shadow: 0px 4px 0px #9A6716, 0px 4px 8px rgba(39, 154, 224, 0.8), inset 0px 2px 0px rgba(255, 255, 255, 0.6), inset 0px -1px 2px rgba(0, 0, 0, 0.25);
@@ -100,6 +110,11 @@ ul, li {
     }
   }
 } // .btn
+
+#logo {
+  display: block;
+  margin: auto;
+}
 
 .scene {
   height: 100%;
@@ -183,3 +198,4 @@ box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.
 } // .scene
 
 @import 'home.scss';
+@import 'page.scss';
