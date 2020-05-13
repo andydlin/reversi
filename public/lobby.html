@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/styles.css" type="text/css">
   </head>
   <body id="lobby" class="page">
-    <main>
+    <div id="content">
       <nav>
         <a href="/"><img src="assets/images/reversi_logo.png" id="logo" height="127" width="342"></a>
         <ul class="main-links">
@@ -19,10 +19,15 @@
           <li><a href="https://en.wikipedia.org/wiki/Reversi" target="_blank" class="btn btn-small btn-secondary">Rules</a></li>
         </ul>
       </nav>
-      <section class="content ta-center">
+      <main class="content ta-center">
         <h1>Lobby</h1>
-      </section>
-    </main>
+        <section>
+          <h3>Messages</h3>
+          <div id="messages"></div>
+        </section>
+      </main>
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="js/main.js" type="text/javascript"></script>
   </body>
 </html>

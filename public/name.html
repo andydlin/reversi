@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/styles.css" type="text/css">
   </head>
   <body id="name" class="page">
-    <main>
+    <div id="content">
       <nav>
         <a href="/"><img src="assets/images/reversi_logo.png" id="logo" height="127" width="342"></a>
         <ul class="main-links">
@@ -19,7 +19,7 @@
           <li><a href="https://en.wikipedia.org/wiki/Reversi" target="_blank" class="btn btn-small btn-secondary">Rules</a></li>
         </ul>
       </nav>
-      <section class="content ta-center">
+      <main class="content ta-center">
         <h1>Enter username</h1>
         <form onsubmit="submitForm(); return false;">
           <div class="form-row btn-row">
@@ -30,8 +30,8 @@
             <button class="btn btn-small btn-primary" type="submit">Submit</button>
           </div>
         </form>
-      </section>
-    </main>
+      </main>
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script type="text/javascript">
       function submitForm() {
