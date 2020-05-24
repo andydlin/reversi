@@ -151,7 +151,6 @@ function formatAMPM(date) {
 }
 
 function updatePlayerCount(count) {
-  console.log(count);
   $('.player-count').html(count);
 }
 
