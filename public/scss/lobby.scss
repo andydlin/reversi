@@ -1,0 +1,139 @@
+#lobby {
+  .section-title {
+    color: #8DAECC;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+
+  #messagesWrapper {
+    flex: 1;
+  }
+
+  #messagesInner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: calc(100vh - 480px);
+    min-height: 320px;
+    padding-bottom: 24px;
+  }
+
+  #messages {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    .message {
+      display: flex;
+      flex-direction: row;
+      margin-top: 1.5rem;
+      width: 100%;
+
+      .player-image {
+        border-radius: 50%;
+        margin-right: 0.5rem;
+
+        img {
+          border-radius: 50%;
+        }
+      }
+
+      .message-inner {
+        margin: 0 auto 0 0;
+      }
+
+      .message-details {
+        align-items: center;
+        color: #7199AC;
+        display: flex;
+        margin-bottom: 0.25rem;
+
+        .message-player {
+          font-weight: 600;
+          margin-right: 0.5rem;
+        }
+
+        .message-time {
+          font-size: 0.85rem;
+          font-style: italic;
+         }
+      }
+
+      p {
+        background: white;
+        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        color: #2F4E6A;
+        display: inline-block;
+        margin: 0 auto 0 0;
+        padding: 0.5rem 0.875rem;
+      }
+
+      &.current-player-message {
+        flex-direction: column;
+        text-align: right;
+
+        .message-inner {
+          margin: 0 0 0 auto;
+        }
+
+        .message-details {
+          justify-content: flex-end;
+          text-align: right;
+        }
+
+        p {
+          background: #0094ED;
+          border-radius: 1.5rem 0rem 1.5rem 1.5rem;
+          color: white;
+          margin: 0 0 0 auto;
+        }
+      } // .current-player-message
+    }
+  } // #messages
+
+  .connection-status {
+    color: #7199AC;
+    font-size: 0.85rem;
+    margin-top: 1.15rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  #playersWrapper {
+    border-right: 1px solid #AFCDE9;
+    margin-right: 24px;
+    padding-right: 24px;
+    width: 280px;
+
+    .section-title {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  #players {
+    .player {
+      align-items: center;
+      border-top: 1px solid #AFCDE9;
+      display: flex;
+      padding: 1rem 0;
+
+      .player-image {
+        border-radius: 50%;
+        margin-right: 0.5rem;
+
+        img {
+          border-radius: 50%;
+        }
+      }
+
+      .player-name {
+        color: #7199AC;
+        font-weight: 600;
+      }
+
+      .player-action {
+        margin-left: auto;
+      }
+    }
+  } // #players
+} // #lobby

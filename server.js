@@ -245,7 +245,8 @@ io.sockets.on('connection', function(socket) {
       result: 'success',
       room: room,
       username: username,
-      message: message
+      message: message,
+      socket_id: socket.id
     };
     io.sockets.in(room).emit('send_message_response', success_data);
     log('Message sent to room ' + room + ' by ' + username);

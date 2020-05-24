@@ -33,8 +33,7 @@ socket.on('join_room_response', function(payload) {
     alert(payload.message);
     return;
   }
-console.log('payload.socket_id = ' + payload.socket_id);
-console.log('socket.id = ' + socket.id);
+
   /* If we are being notified that we joined the room, then ignore it */
   if(payload.socket_id == socket.id) {
     return;
@@ -48,35 +47,29 @@ console.log('socket.id = ' + socket.id);
     var nodeA = $('<div></div>');
     nodeA.addClass('socket_' + payload.socket_id);
     
-    var nodeB = $('<div></div>');
-    nodeB.addClass('socket_' + payload.socket_id);
+    var nodeB = $('<div class="player socket_' + payload.socket_id + '"><div class="player-image"><img src="https://api.adorable.io/avatars/48/' + payload.socket_id + '@adorable.io.png" height="32" width="32"></div><div class="player-name" title="' + payload.username +'">' + payload.username + '</div></div>');
 
-    var nodeC = $('<div></div>');
+    var nodeC = $('<div class="player-action"></div>');
     nodeC.addClass('socket_' + payload.socket_id);
-
-    nodeB.append('<h4>' + payload.username + '</h4>');
 
     var buttonC = makeInviteButton();
     nodeC.append(buttonC);
+    nodeB.append(nodeC);
 
     nodeA.hide();
     nodeB.hide();
-    nodeC.hide();
-    $('#players').append(nodeA, nodeB, nodeC); 
+    $('#players').append(nodeA, nodeB); 
     nodeA.slideDown(1000);
     nodeB.slideDown(1000);
-    nodeC.slideDown(1000);
   } else {
     var buttonC = makeInviteButton();
     $('.socket_' + payload.socket_id + ' button').replaceWith(buttonC);
     dom_elements.slideDown(1000);
   }
 
-  var messageHtml = '<p>' + payload.username + ' just entered the lobby.</p>';
+  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' just entered the lobby.</p></div>';
   var messageNode = $(messageHtml);
-  messageNode.hide();
   $('#messages').append(messageNode);
-  messageNode.slideDown(1000);
 });
 
 /* Server responds that someone left a room */
@@ -100,11 +93,9 @@ socket.on('player_disconnected', function(payload) {
   }
 
   /* Manage message that a player has left */
-  var messageHtml = '<p>' + payload.username + ' has left the lobby.</p>';
+  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' has left the lobby.</p></div>';
   var messageNode = $(messageHtml);
-  messageNode.hide();
   $('#messages').append(messageNode);
-  messageNode.slideDown(1000);
 });
 
 socket.on('send_message_response', function(payload) {
@@ -112,7 +103,17 @@ socket.on('send_message_response', function(payload) {
     alert(payload.message);
     return;
   }
-  $('#messages').append('<p><b>' + payload.username + ' says:</b> ' + payload.message + '</p>');
+  
+  var time = formatAMPM(new Date());
+
+  if(payload.socket_id == socket.id) { // if it's the logged in player's message, different styling
+    var messageHtml = '<div class="message current-player-message"><div class="message-inner"><div class="message-details"><div class="message-time">' + time + '</div></div><p>' + payload.message + '</p></div></div>';
+  } else {
+    var messageHtml = '<div class="message"><div class="player-image"><img src="https://api.adorable.io/avatars/48/' + payload.socket_id + '@adorable.io.png" height="32" width="32"></div><div class="message-inner"><div class="message-details"><div class="message-player">' + payload.username + '</div><div class="message-time">' + time + '</div></div><p>' + payload.message + '</p></div></div>';
+  }
+
+  $('#messages').append(messageHtml);
+  $('#sendMessageHolder').val('');
 });
 
 function send_message() {
@@ -125,10 +126,21 @@ function send_message() {
 }
 
 function makeInviteButton() {
-  var buttonHtml = '<button type=\'button\' class=\'btn btn-small btn-secondary\'>Invite</button>';
+  var buttonHtml = '<button type=\'button\' class=\'btn btn-tiny btn-outline\'>Invite</button>';
   var buttonNode = $(buttonHtml);
 
   return buttonNode;
+}
+
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
 }
 
 $(function() {

@@ -1,8 +1,10 @@
 .page {
-  #content {
-    margin: 48px auto;
-    max-width: 800px;
+  #wrapper {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 48px 24px;
   }
+  
 
   nav {
     align-items: center;
@@ -30,20 +32,28 @@
     } // .main-links
   } // nav
 
-  .content {
-    margin: 48px 0;
-
-    h1 {
-      text-align: center;
+  .page-title {
+    border-bottom: 1px solid #AFCDE9;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  
+    .page-detail {
+      margin-top: 1rem;
     }
+  }
+
+  .content {
+    margin: 48px 0 0 0;
 
     img {
       max-width: 100%;
       width: auto;
     }
-    
-    form {
-      display: inline-block;
-    }
   }
 } // .page
+
+#name {
+  .page-title {
+    border-bottom: 0;
+  }
+}
