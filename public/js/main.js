@@ -34,6 +34,8 @@ socket.on('join_room_response', function(payload) {
     return;
   }
 
+  updatePlayerCount(payload.membership);
+
   /* If we are being notified that we joined the room, then ignore it */
   if(payload.socket_id == socket.id) {
     return;
@@ -70,6 +72,7 @@ socket.on('join_room_response', function(payload) {
   var messageHtml = '<div class="connection-status"><p>' + payload.username + ' just entered the lobby.</p></div>';
   var messageNode = $(messageHtml);
   $('#messages').append(messageNode);
+  updateChatScrollPosition();
 });
 
 /* Server responds that someone left a room */
@@ -78,6 +81,8 @@ socket.on('player_disconnected', function(payload) {
     alert(payload.message);
     return;
   }
+
+  updatePlayerCount(payload.membership);
 
   /* If we are being notified that we left the room, then ignore it */
   if(payload.socket_id == socket.id) {
@@ -96,6 +101,7 @@ socket.on('player_disconnected', function(payload) {
   var messageHtml = '<div class="connection-status"><p>' + payload.username + ' has left the lobby.</p></div>';
   var messageNode = $(messageHtml);
   $('#messages').append(messageNode);
+  updateChatScrollPosition();
 });
 
 socket.on('send_message_response', function(payload) {
@@ -114,6 +120,7 @@ socket.on('send_message_response', function(payload) {
 
   $('#messages').append(messageHtml);
   $('#sendMessageHolder').val('');
+  updateChatScrollPosition();
 });
 
 function send_message() {
@@ -141,6 +148,17 @@ function formatAMPM(date) {
   minutes = minutes < 10 ? '0'+minutes : minutes;
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
+}
+
+function updatePlayerCount(count) {
+  console.log(count);
+  $('.player-count').html(count);
+}
+
+function updateChatScrollPosition() {
+  $('#messages').animate({
+    scrollTop: $('#messages').prop('scrollHeight')
+  }, 0);
 }
 
 $(function() {

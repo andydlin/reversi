@@ -9,19 +9,18 @@
     flex: 1;
   }
 
-  #messagesInner {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: calc(100vh - 480px);
-    min-height: 320px;
-    padding-bottom: 24px;
-  }
-
   #messages {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    height: calc(100vh - 480px);
+    justify-content: flex-start;
+    min-height: 320px;
+    overflow-y: auto;
+    padding-bottom: 24px;
+
+    & > div:first-child {
+      margin-top: auto !important;
+    }
 
     .message {
       display: flex;
@@ -106,9 +105,18 @@
     width: 280px;
 
     .section-title {
+      display: flex;
       margin-bottom: 0.5rem;
+
+      hr {
+        border: 0;
+        border-top: 2px solid #AFCDE9;
+        display: inline-block;
+        margin: auto 0.5rem;
+        width: 24px;
+      }
     }
-  }
+  } // #playersWrapper
 
   #players {
     .player {

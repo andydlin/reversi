@@ -162,9 +162,14 @@ io.sockets.on('connection', function(socket) {
     if('undefined' !== typeof players[socket.id] && players[socket.id]) {
       var username = players[socket.id].username;
       var room = players[socket.id].room;
+
+      var roomObject = io.sockets.adapter.rooms[room];
+      var numClients = roomObject ? roomObject.length : 0;
+
       var payload = {
         username: username,
-        socket_id: socket.id
+        socket_id: socket.id,
+        membership: numClients,
       };
 
       delete players[socket.id];
