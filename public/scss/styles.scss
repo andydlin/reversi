@@ -1,3 +1,5 @@
+@import 'mixins.scss';
+
 * {
   box-sizing: border-box;
   outline: none;
@@ -275,23 +277,13 @@ forms
     background: transparent;
     height: 100%;
     position: relative;
-    transform: rotate(0deg);
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
+    @include prefix(transform-style, preserve-3d, moz webkit);
     transition: all 0.25s ease-in-out;
     width: 100%;
 
-    &.spin {
-      transform: rotateY(180deg);
-    }
-
-    &.fade-out {
-      opacity: 0;
-      transform: rotate(0deg) scale(1.5);
-    }
-
     .coin-face {
       align-items: center;
+      @include prefix(backface-visibility, hidden, moz webkit);
       border-radius: 100%;
       display: grid;
       height: 100%;
@@ -331,27 +323,27 @@ forms
     } // .coin-face
 
     .coin-face--back {
-      transform: rotateY(180deg); 
+      @include prefix(transform, rotateY(.5turn), moz webkit);
     }
 
     &.coin-ps .coin-face--front,
     &.coin-xbox .coin-face--back {
       background: linear-gradient(180deg, #35B6FF 0%, #003087 100%);
-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
       
       img {
         height: 50%;
-        width: auto;
+        width: inherit;
       }
     }
 
     &.coin-xbox .coin-face--front,
     &.coin-ps .coin-face--back {
       background: linear-gradient(180deg, #9AED2F 0%, #107C10 100%);
-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.29), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px -3px 4px rgba(0, 0, 0, 0.29), inset 0px 2px 1px rgba(255, 255, 255, 0.5);
 
       img {
-        height: auto;
+        height: inherit;
         width: 60%;
       }
     }
