@@ -8,15 +8,171 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/normalize.css" type="text/css">
     <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <style>
+      .scene {
+        height: 64px;
+        width: 64px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 64px auto;
+        max-width: 600px;
+      }
+
+      .cell {
+        padding: 24px;
+        text-align: center;
+      }
+
+      .square {
+        align-items: center;
+        border: 2px solid #96BACC;
+        display: flex;
+        height: 96px;
+        margin: 16px auto 0 auto;
+        width: 96px;
+      }
+
+      .scene {
+        margin: 0 auto;
+      }
+
+      .scene.hide-coin {
+        opacity: 0;
+        transform: rotate(0deg) scale(2);
+      }
+
+      .scene .coin.coin-error {
+        background: #AFCDE9;
+        border-radius: 100%;
+      }
+
+      .square-hover {
+        border: none;
+        box-shadow: 0px 0px 16px #0094ED;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .square-hover:before {
+        content: '';
+        position: absolute;
+        z-index: -2;
+        left: -50%;
+        top: -50%;
+        width: 200%;
+        height: 200%;
+        background-color: #399953;
+        background-repeat: no-repeat;
+        background-size: 50% 50%, 50% 50%;
+        background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+        background-image: linear-gradient(#0094ED, #0094ED), linear-gradient(#2AABF9, #2AABF9), linear-gradient(#5BB9F2, #5BB9F2), linear-gradient(#82CBF6, #82CBF6);
+        animation: rotate .5s linear infinite;
+      }
+
+      .square-hover:after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        left: 2px;
+        top: 2px;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        background: #CBEEFF;
+      }
+
+      @keyframes rotate {
+        100% {
+          transform: rotate(1turn);
+        }
+      }
+    </style>
   </head>
-  <body id="home">
-    <div class="scene">
-      <div class="coin">
-        <div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div>
-        <div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div>
+  <body id="test">
+    <div class="grid">
+      <div class="cell">
+        <h4>Disk Flip</h4>
+        <button class="btn btn-tiny btn-primary" id="toggleFlip" data-current-face="playstation">Flip</button>
+        <div class="square">
+          <div class="scene">
+            <div class="coin coin-ps coin-flip">
+              <div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div>
+              <div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cell">
+        <h4>Place/Remove</h4>
+        <button class="btn btn-tiny btn-primary" id="toggleVisibility" data-visibility="visible">Toggle</button>
+        <div class="square">
+          <div class="scene coin-appearance">
+            <div class="coin coin-xbox">
+              <div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div>
+              <div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="cell">
+        <h4>Error</h4>
+        <div class="square">
+          <div class="scene">
+            <div class="coin coin-error">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cell">
+        <h4>Empty</h4>
+        <div class="square">
+        </div>
+      </div>
+      <div class="cell">
+        <h4>Hover</h4>
+        <div class="square square-hover">
+          <div class="scene">
+          </div>
+        </div>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="/js/anime.min.js" type="text/javascript"></script>
+    <script>
+      $('#toggleFlip').click(function() {
+        var currFace = $(this).attr('data-current-face');
+        var rotateYValue = currFace == 'playstation' ? 180 : 0;
+        anime({
+          targets: '.coin-flip',
+          rotateY: rotateYValue,
+          duration: 1000,
+          easing: 'easeInOutElastic(1.5, 0.5)'  
+        });
+        var newFace = currFace == 'playstation' ? 'xbox' : 'playstation';
+        $(this).attr('data-current-face', newFace);
+      });
+
+      $('#toggleVisibility').click(function() {
+        var currVisibility = $(this).attr('data-visibility');
+        var scaleValue = currVisibility == 'visible' ? 2 : 1;
+        var opacityValue = currVisibility == 'visible' ? 0 : 1;
+
+        anime({
+          targets: '.coin-appearance',
+          scale: scaleValue,
+          opacity: opacityValue,
+          duration: 250,
+          easing: 'linear'
+        });
+
+        var newAppearance = currVisibility == 'visible' ? 'hidden' : 'visible';
+        $(this).attr('data-visibility', newAppearance);
+      });
+    </script>
   </body>
 </html>
