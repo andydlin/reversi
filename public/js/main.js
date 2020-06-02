@@ -15,7 +15,7 @@ if('undefined' == typeof username || !username) {
 }
 
 var chat_room = getURLParameters('game_id');
-if('undefined' == typeof chat_room || !char_room) {
+if('undefined' == typeof chat_room || !chat_room) {
   chat_room = 'lobby';
 }
 
@@ -70,7 +70,7 @@ socket.on('join_room_response', function(payload) {
     dom_elements.slideDown(1000);
   }
 
-  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' just entered the lobby.</p></div>';
+  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' just entered the room.</p></div>';
   var messageNode = $(messageHtml);
   $('#messages').append(messageNode);
   updateChatScrollPosition();
@@ -99,7 +99,7 @@ socket.on('player_disconnected', function(payload) {
   }
 
   /* Manage message that a player has left */
-  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' has left the lobby.</p></div>';
+  var messageHtml = '<div class="connection-status"><p>' + payload.username + ' has left the room.</p></div>';
   var messageNode = $(messageHtml);
   $('#messages').append(messageNode);
   updateChatScrollPosition();
@@ -241,7 +241,7 @@ function makeInvitedButton(socket_id) {
 }
 
 function makePlayButton(socket_id) {
-  var buttonHtml = '<button type=\'button\' class=\'btn btn-tiny btn-outline\'>Play</button>';
+  var buttonHtml = '<button type=\'button\' class=\'btn btn-tiny btn-secondary\'>Play</button>';
   var buttonNode = $(buttonHtml);
 
   buttonNode.click(function() {
@@ -286,4 +286,192 @@ $(function() {
 
   console.log('*** Client Log Message: \'join_room\' payload: ' + JSON.stringify(payload));
   socket.emit('join_room', payload);
+
+  $('#quit').append('<a href="lobby.html?username=' + username + '" class="btn btn-small btn-outline">Quit</a>');
 });
+
+var old_board = [
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?'],
+  ['?', '?', '?', '?', '?', '?', '?', '?']
+];
+
+var my_color = ' ';
+
+socket.on('game_update', function(payload) {
+  console.log('*** Client Log Message: \'game_upate\' payload: ' + JSON.stringify(payload));
+
+  /* Check for a good board update */
+  if(payload.result == 'fail') {
+    console.log(payload.message);
+    window.location.href = 'lobby.html?username=' + username;
+    return;
+  }
+
+  /* Check or a good board in the payload */
+  var board = payload.game.board;
+  if('undefined' == typeof board || !board) {
+    console.log('Internal erorr: received a malformed board update from the server');
+    return;
+  }
+
+  var opponentName = '';
+  
+  /* Update my color */
+  if(socket.id == payload.game.player_white.socket) {
+    my_color = 'white';
+    opponentName = payload.game.player_black.username;
+  } else if(socket.id == payload.game.player_black.socket) {
+    my_color = 'black';
+    opponentName = payload.game.player_white.username;
+  } else {
+    // Something weird is giong on, like three people playing at once
+    // Send client back to the lobby
+    window.location.href = 'lobby.html?username=' + username;
+    return;
+  }
+  console.log(payload.game.player_black);
+  console.log(payload.game.player_white);
+
+  //$('#myColor').html('<h2>My color is ' + my_color + '</h2>');
+
+  // Create player details
+  // Black is Xbox, White is PS
+  var myDetails, opponentDetails, myHtml, opponentHtml = '';
+  if(my_color == 'white') {
+    myDetails = createPlayerWhiteDetails('You');
+    myHtml = myDetails + '<div class="score" id="whiteSum">0</div>';
+    opponentDetails = createPlayerBlackDetails(opponentName);
+    opponentHtml = '<div class="score" id="blackSum">0</div>' + opponentDetails;
+  } else if(my_color == 'black') {
+    myDetails = createPlayerBlackDetails('You');
+    myHtml = myDetails + '<div class="score" id="blackSum">0</div>';
+    opponentDetails = createPlayerWhiteDetails(opponentName);
+    opponentHtml = '<div class="score" id="whiteSum">0</div>' + opponentDetails;
+  }
+
+  $('#player1Details').html(myHtml);
+  $('#player2Details').html(opponentHtml);
+
+  /* Animate changes to the board */
+  var blacksum = 0;
+  var whitesum = 0;
+  var row, column;
+  for(row = 0; row < 8; row++) {
+    for(column = 0; column < 8; column++) {
+      if(board[row][column] == 'b') {
+        blacksum++;
+      }
+
+      if(board[row][column] == 'w') {
+        whitesum++;
+      }
+
+      /* If a board space has changed */
+      if(old_board[row][column] != board[row][column]) {
+        if(old_board[row][column] == '?' && board[row][column] == ' ') {
+          $('#' + row + '_' + column).html('<div class="scene"></scene>');
+        } else if(old_board[row][column] == '?' && board[row][column] == 'w') {
+          var coin = createWhiteCoin('empty-white');
+          $('#' + row + '_' + column).html(coin);
+        } else if(old_board[row][column] == '?' && board[row][column] == 'b') {
+          var coin = createBlackCoin('empty-black');
+          $('#' + row + '_' + column).html(coin);
+        } else if(old_board[row][column] == ' ' && board[row][column] == 'w') {
+          var coin = createWhiteCoin('empty-white');
+          $('#' + row + '_' + column).html(coin);
+        } else if(old_board[row][column] == ' ' && board[row][column] == 'b') {
+          var coin = createBlackCoin('empty-black');
+          $('#' + row + '_' + column).html(coin);
+        } else if(old_board[row][column] == 'w' && board[row][column] == ' ') {
+          $('#' + row + '_' + column).html('white to empty');
+        } else if(old_board[row][column] == 'b' && board[row][column] == ' ') {
+          $('#' + row + '_' + column).html('black to empty');
+        } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
+          $('#' + row + '_' + column).html('white to black');
+        } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
+          $('#' + row + '_' + column).html('black to white');
+        } else {
+          $('#' + row + '_' + column).html('error');
+        }
+
+        /* Set up interactivity */
+        $('#' + row + '_' + column).off('click');
+        if(board[row][column] == ' ') {
+          $('#' + row + '_' + column).addClass('hovered-over');
+          $('#' + row + '_' + column).click(function(r, c) {
+            return function() {
+              var payload = {};
+              payload.row = r;
+              payload.column = c;
+              payload.color = my_color;
+              console.log('** Client Log Message: \'play_token\' paylaod:' + JSON.stringify(payload));
+              socket.emit('play_token', payload);
+            };
+          }(row, column));
+        } else {
+          $('#' + row + '_' + column).removeClass('hovered-over');
+        }
+      } // end if
+    } // end for
+  } // end for
+  $('#blackSum').html(blacksum);
+  $('#whiteSum').html(whitesum);
+
+  old_board = board;
+});
+
+socket.on('play_token_response', function(payload) {
+  console.log('*** Client Log Message: \'play_token_response\' payload: ' + JSON.stringify(payload));
+
+  /* Check for a good play_token_response */
+  if(payload.result == 'fail') {
+    console.log(payload.message);
+    alert(payload.message);
+    return;
+  }
+});
+
+socket.on('game_over', function(payload) {
+  console.log('*** Client Log Message: \'game_over\' payload: ' + JSON.stringify(payload));
+
+  /* Check for a good play_token_response */
+  if(payload.result == 'fail') {
+    console.log(payload.message);
+    return;
+  }
+
+  /* Jump to a new page */
+  $('#game_over').html('<h1>Game Over</h1><h2>' + payload.who_won + ' won!</h2>');
+  $('#game_over').append('<a href="lobby.html?username=' + username + '" class="btn btn-tiny btn-primary">Return to the lobby</a>');
+});
+
+function createPlayerWhiteDetails(username) {
+  var html = '<div class="player-details"><div class="player-coin player-coin--ps"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div><h4 class="player-ps">' + username + '</h4></div>';
+
+  return html;
+}
+
+function createPlayerBlackDetails(username) {
+  var html = '<div class="player-details"><div class="player-coin player-coin--xbox"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div><h4 class="player-xbox">' + username + '</h4></div>';
+
+  return html;
+}
+
+function createWhiteCoin(classes) {
+  var html = '<div class="scene"><div class="coin coin-ps' + ' ' + classes + '"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div></div></div>';
+
+  return html;
+}
+
+
+function createBlackCoin(classes) {
+  var html = '<div class="scene"><div class="coin coin-xbox' + ' ' + classes + '"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div></div></div>';
+
+  return html;
+}
