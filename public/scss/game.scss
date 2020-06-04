@@ -248,7 +248,7 @@
 
       &.flip-coin {
         .coin {
-          @include prefix(animation, flipCoin 1s ease-in-out 1, moz webkit);
+          @include prefix(animation, flipCoin 0.5s ease-in-out 1, moz webkit);
         }
       }
     } // .scene
