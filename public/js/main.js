@@ -302,6 +302,11 @@ var old_board = [
 ];
 
 var my_color = ' ';
+var opponent_color = '';
+var opponentName = '';
+var myCoin = '';
+var opponentCoin = '';
+var interval_timer = '';
 
 socket.on('game_update', function(payload) {
   console.log('*** Client Log Message: \'game_upate\' payload: ' + JSON.stringify(payload));
@@ -319,24 +324,28 @@ socket.on('game_update', function(payload) {
     console.log('Internal erorr: received a malformed board update from the server');
     return;
   }
-
-  var opponentName = '';
   
   /* Update my color */
   if(socket.id == payload.game.player_white.socket) {
     my_color = 'white';
+    myCoin = createWhiteCoin();
+    opponent_color = 'black';
     opponentName = payload.game.player_black.username;
+    opponentCoin = createBlackCoin();
   } else if(socket.id == payload.game.player_black.socket) {
     my_color = 'black';
+    myCoin = createBlackCoin();
+    opponent_color = 'white';
     opponentName = payload.game.player_white.username;
+    opponentCoin = createWhiteCoin();
   } else {
-    // Something weird is giong on, like three people playing at once
+    // Something weird is going on, like three people playing at once
     // Send client back to the lobby
     window.location.href = 'lobby.html?username=' + username;
     return;
   }
-  console.log(payload.game.player_black);
-  console.log(payload.game.player_white);
+  console.log(myCoin);
+  console.log(opponentCoin);
 
   //$('#myColor').html('<h2>My color is ' + my_color + '</h2>');
 
@@ -355,13 +364,35 @@ socket.on('game_update', function(payload) {
     opponentHtml = '<div class="score" id="whiteSum">0</div>' + opponentDetails;
   }
 
+  var whoseTurnCoin = payload.game.whose_turn == my_color ? myCoin : opponentCoin;
+  var whoseTurnText = payload.game.whose_turn == my_color ? 'Your turn.' : opponentName + '\'s turn.';
+  var whoseTurnHtml = '<div class="turn-details">' + whoseTurnCoin + '<h4>' + whoseTurnText + '</h4></div><div class="elapsed-time">Elapsed time - <span id="elapsed"></span></div>';
+
   $('#player1Details').html(myHtml);
   $('#player2Details').html(opponentHtml);
+  $('#whose_turn').html(whoseTurnHtml);
+
+  clearInterval(interval_timer);
+  interval_timer = setInterval(function(last_time) {
+    return function() {
+      var d = new Date();
+      var elapsedMilli = d.getTime() - last_time;
+      var minutes = Math.floor(elapsedMilli / (60 * 1000));
+      var seconds = Math.floor((elapsedMilli % (60 * 1000)) / 1000);
+
+      if(seconds < 10) {
+        $('#elapsed').html(minutes + ':0' + seconds);
+      } else {
+        $('#elapsed').html(minutes + ':' + seconds);
+      }
+    }
+  }(payload.game.last_move_time), 1000);
 
   /* Animate changes to the board */
   var blacksum = 0;
   var whitesum = 0;
   var row, column;
+  var animationIntervals = [];
   for(row = 0; row < 8; row++) {
     for(column = 0; column < 8; column++) {
       if(board[row][column] == 'b') {
@@ -371,51 +402,60 @@ socket.on('game_update', function(payload) {
       if(board[row][column] == 'w') {
         whitesum++;
       }
+      (function(row, column) {
+        /* If a board space has changed */
+        if(old_board[row][column] != board[row][column]) {
+          if(old_board[row][column] == '?' && board[row][column] == ' ') {
+            $('#' + row + '_' + column).html('<div class="scene"></scene>');
+          } else if(old_board[row][column] == '?' && board[row][column] == 'w') {
+            var coin = createWhiteCoin('place-coin');
+            $('#' + row + '_' + column).html(coin);
+          } else if(old_board[row][column] == '?' && board[row][column] == 'b') {
+            var coin = createBlackCoin('place-coin');
+            $('#' + row + '_' + column).html(coin);
+          } else if(old_board[row][column] == ' ' && board[row][column] == 'w') {
+            var coin = createWhiteCoin('place-coin');
+            $('#' + row + '_' + column).html(coin);
+          } else if(old_board[row][column] == ' ' && board[row][column] == 'b') {
+            var coin = createBlackCoin('place-coin');
+            $('#' + row + '_' + column).html(coin);
+          } else if(old_board[row][column] == 'w' && board[row][column] == ' ') {
+            $('#' + row + '_' + column).html('white to empty');
+          } else if(old_board[row][column] == 'b' && board[row][column] == ' ') {
+            $('#' + row + '_' + column).html('black to empty');
+          } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
+            var coin = createBlackCoin('flip-coin');
+            setTimeout(function() {
+              $('#' + row + '_' + column).html(coin);
+            }, 500);
+          } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
+            var coin = createWhiteCoin('flip-coin');
+            setTimeout(function() {
+              $('#' + row + '_' + column).html(coin);
+            }, 500);
+          } else {
+            $('#' + row + '_' + column).html('error');
+          }
+        } // end if board space changed
+      }(row, column));
 
-      /* If a board space has changed */
-      if(old_board[row][column] != board[row][column]) {
-        if(old_board[row][column] == '?' && board[row][column] == ' ') {
-          $('#' + row + '_' + column).html('<div class="scene"></scene>');
-        } else if(old_board[row][column] == '?' && board[row][column] == 'w') {
-          var coin = createWhiteCoin('empty-white');
-          $('#' + row + '_' + column).html(coin);
-        } else if(old_board[row][column] == '?' && board[row][column] == 'b') {
-          var coin = createBlackCoin('empty-black');
-          $('#' + row + '_' + column).html(coin);
-        } else if(old_board[row][column] == ' ' && board[row][column] == 'w') {
-          var coin = createWhiteCoin('empty-white');
-          $('#' + row + '_' + column).html(coin);
-        } else if(old_board[row][column] == ' ' && board[row][column] == 'b') {
-          var coin = createBlackCoin('empty-black');
-          $('#' + row + '_' + column).html(coin);
-        } else if(old_board[row][column] == 'w' && board[row][column] == ' ') {
-          $('#' + row + '_' + column).html('white to empty');
-        } else if(old_board[row][column] == 'b' && board[row][column] == ' ') {
-          $('#' + row + '_' + column).html('black to empty');
-        } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
-          $('#' + row + '_' + column).html('white to black');
-        } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
-          $('#' + row + '_' + column).html('black to white');
-        } else {
-          $('#' + row + '_' + column).html('error');
-        }
+      /* Set up interactivity */
+      $('#' + row + '_' + column).off('click');
+      $('#' + row + '_' + column).removeClass('hovered-over');
 
-        /* Set up interactivity */
-        $('#' + row + '_' + column).off('click');
-        if(board[row][column] == ' ') {
+      if(payload.game.whose_turn === my_color) {
+        if(payload.game.legal_moves[row][column] === my_color.substr(0, 1)) {
           $('#' + row + '_' + column).addClass('hovered-over');
           $('#' + row + '_' + column).click(function(r, c) {
             return function() {
               var payload = {};
               payload.row = r;
-              payload.column = c;
+              payload.column = c; 
               payload.color = my_color;
               console.log('** Client Log Message: \'play_token\' paylaod:' + JSON.stringify(payload));
               socket.emit('play_token', payload);
             };
           }(row, column));
-        } else {
-          $('#' + row + '_' + column).removeClass('hovered-over');
         }
       } // end if
     } // end for
@@ -446,9 +486,13 @@ socket.on('game_over', function(payload) {
     return;
   }
 
+  var winnerText = payload.who_won == my_color ? 'You won!' : opponentName + ' won, good try!';
+
   /* Jump to a new page */
-  $('#game_over').html('<h1>Game Over</h1><h2>' + payload.who_won + ' won!</h2>');
+  $('#game_over').html('<h1>Game Over</h1><h2>' + winnerText + '</h2>');
   $('#game_over').append('<a href="lobby.html?username=' + username + '" class="btn btn-tiny btn-primary">Return to the lobby</a>');
+  $('#whose_turn').hide();
+  clearInterval(interval_timer);
 });
 
 function createPlayerWhiteDetails(username) {
@@ -464,14 +508,14 @@ function createPlayerBlackDetails(username) {
 }
 
 function createWhiteCoin(classes) {
-  var html = '<div class="scene"><div class="coin coin-ps' + ' ' + classes + '"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div></div></div>';
+  var html = '<div class="scene' + ' ' + classes + '"><div class="coin coin-ps"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div></div></div>';
 
   return html;
 }
 
 
 function createBlackCoin(classes) {
-  var html = '<div class="scene"><div class="coin coin-xbox' + ' ' + classes + '"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div></div></div>';
+  var html = '<div class="scene' + ' ' + classes + '"><div class="coin coin-xbox"><div class="coin-face coin-face--front"><span class="coin-highlight"></span><img src="assets/images/xbox-logo.svg"></div><div class="coin-face coin-face--back"><span class="coin-highlight"></span><img src="assets/images/ps-logo.svg"></div></div></div>';
 
   return html;
 }

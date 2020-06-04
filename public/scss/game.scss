@@ -240,11 +240,79 @@
         }
       }
     } // div
+
+    .scene {
+      &.place-coin {
+        @include prefix(animation, placeCoin 0.15s linear 1, moz webkit);
+      }
+
+      &.flip-coin {
+        .coin {
+          @include prefix(animation, flipCoin 1s ease-in-out 1, moz webkit);
+        }
+      }
+    } // .scene
   } // #gameBoard
+
+  #game_over {
+    margin-bottom: 24px;
+    text-align: center;
+
+    .btn {
+      margin-top: 16px;
+    }
+  }
+
+  #whose_turn {
+    align-items: center;
+    display: flex;
+    margin: 0 auto;
+    max-width: calc(100vh - 320px);
+    min-width: 320px;
+
+    .turn-details {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    .elapsed-time {
+      margin-left: auto;
+    }
+
+    .scene {
+      height: 32px;
+      margin-right: 8px;
+      width: 32px;
+    }
+  } // #whose_turn
 }
 
 @keyframes rotate {
   100% {
     transform: rotate(1turn);
+  }
+}
+
+@keyframes placeCoin {
+  0% {
+    opacity: 0;
+    @include prefix(transform, scale(2), moz webkit);
+  }
+  100% {
+    opacity: 1;
+    @include prefix(transform, scale(1), moz webkit);
+  }
+}
+
+@keyframes flipCoin {
+  0% {
+    @include prefix(transform, translateY(0) rotateY(.5turn) scale(1), moz webkit);
+  }
+  50% {
+    @include prefix(transform, translateY(-10px) rotateY(.25turn) scale(1.15), moz webkit);
+  }
+  100% {  
+    @include prefix(transform, translateY(0px) rotateY(0) scale(1), moz webkit);
   }
 }
