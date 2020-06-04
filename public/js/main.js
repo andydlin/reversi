@@ -392,7 +392,6 @@ socket.on('game_update', function(payload) {
   var blacksum = 0;
   var whitesum = 0;
   var row, column;
-  var animationIntervals = [];
   for(row = 0; row < 8; row++) {
     for(column = 0; column < 8; column++) {
       if(board[row][column] == 'b') {
@@ -488,11 +487,13 @@ socket.on('game_over', function(payload) {
 
   var winnerText = payload.who_won == my_color ? 'You won!' : opponentName + ' won, good try!';
 
-  /* Jump to a new page */
-  $('#game_over').html('<h1>Game Over</h1><h2>' + winnerText + '</h2>');
-  $('#game_over').append('<a href="lobby.html?username=' + username + '" class="btn btn-tiny btn-primary">Return to the lobby</a>');
-  $('#whose_turn').hide();
-  clearInterval(interval_timer);
+  // Display game over message
+  setTimeout(function() {
+    $('#game_over').html('<h1>Game Over</h1><h2>' + winnerText + '</h2>');
+    $('#game_over').append('<a href="lobby.html?username=' + username + '" class="btn btn-tiny btn-primary">Return to the lobby</a>');
+    $('#whose_turn').hide();
+    clearInterval(interval_timer);
+  }, 500);
 });
 
 function createPlayerWhiteDetails(username) {
