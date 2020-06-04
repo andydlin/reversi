@@ -428,12 +428,12 @@ socket.on('game_update', function(payload) {
             var coin = createBlackCoin('flip-coin');
             setTimeout(function() {
               $('#' + row + '_' + column).html(coin);
-            }, 500);
+            }, 150);
           } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
             var coin = createWhiteCoin('flip-coin');
             setTimeout(function() {
               $('#' + row + '_' + column).html(coin);
-            }, 500);
+            }, 150);
           } else {
             $('#' + row + '_' + column).html('error');
           }

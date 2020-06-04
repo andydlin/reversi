@@ -19,6 +19,20 @@
     }
   } // nav
 
+  .content {
+    @media (min-width: 950px) {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  #detailsWrapper {
+    @media (min-width: 950px) {
+      margin-right: 356px;
+      width: 100%;
+    }
+  }
+
   .game-details {
     display: grid;
     grid-template-columns: 1fr 50px 1fr;
@@ -157,9 +171,23 @@
     border-top: 1px solid #AFCDE9;
     margin-top: 1.5rem;
     padding-top: 1rem;
-  }
+
+    @media (min-width: 950px) {
+      border-top: none;
+      margin-left: 24px;
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    #messages {
+      @media (min-width: 950px) {
+        height: 548px;
+      }
+    }
+  } // #messagesWrapper
 
   #gameBoard {
+    align-self: flex-start;
     background: #C0D7EC;
     display: grid;
     grid-auto-rows: 1fr;
@@ -170,6 +198,11 @@
     max-width: calc(100vh - 320px);
     min-width: 320px;
     padding: 2px;
+
+    @media (min-width: 950px) {
+      flex-grow: 1;
+      margin-left: 0;
+    }
 
     &:before {
       content: '';
@@ -321,7 +354,7 @@
     @include prefix(transform, translateY(0) rotateY(.5turn) scale(1), moz webkit);
   }
   50% {
-    @include prefix(transform, translateY(-10px) rotateY(.25turn) scale(1.15), moz webkit);
+    @include prefix(transform, translateY(-10px) rotateY(.25turn) scale(1.25), moz webkit);
   }
   100% {  
     @include prefix(transform, translateY(0px) rotateY(0) scale(1), moz webkit);
