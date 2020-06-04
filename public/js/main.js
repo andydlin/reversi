@@ -419,9 +419,11 @@ socket.on('game_update', function(payload) {
             var coin = createBlackCoin('place-coin');
             $('#' + row + '_' + column).html(coin);
           } else if(old_board[row][column] == 'w' && board[row][column] == ' ') {
-            $('#' + row + '_' + column).html('white to empty');
+            var coin = createWhiteCoin('remove-coin');
+            $('#' + row + '_' + column).html(coin);
           } else if(old_board[row][column] == 'b' && board[row][column] == ' ') {
-            $('#' + row + '_' + column).html('black to empty');
+            var coin = createBlackCoin('remove-coin');
+            $('#' + row + '_' + column).html(coin);
           } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
             var coin = createBlackCoin('flip-coin');
             setTimeout(function() {

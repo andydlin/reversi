@@ -305,6 +305,17 @@
   }
 }
 
+@keyframes hideCoin {
+  0% {
+    opacity: 1;
+    @include prefix(transform, scale(1), moz webkit);
+  }
+  100% {
+    opacity: 0;
+    @include prefix(transform, scale(2), moz webkit);
+  }
+}
+
 @keyframes flipCoin {
   0% {
     @include prefix(transform, translateY(0) rotateY(.5turn) scale(1), moz webkit);
