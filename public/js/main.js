@@ -392,7 +392,6 @@ socket.on('game_update', function(payload) {
   var blacksum = 0;
   var whitesum = 0;
   var row, column;
-  var intervalCount = 150;
   for(row = 0; row < 8; row++) {
     for(column = 0; column < 8; column++) {
       if(board[row][column] == 'b') {
@@ -402,8 +401,7 @@ socket.on('game_update', function(payload) {
       if(board[row][column] == 'w') {
         whitesum++;
       }
-      
-      console.log(intervalCount);
+
       (function(row, column) {
         /* If a board space has changed */
         if(old_board[row][column] != board[row][column]) {
@@ -430,19 +428,9 @@ socket.on('game_update', function(payload) {
           } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
             var coin = createWhiteCoin('flip-coin');
             $('#' + row + '_' + column).html(coin);
-            /*var flipCoinInterval = setTimeout(function() {
-              $('#' + row + '_' + column).html(coin);
-              clearTimeout(flipCoinInterval);
-            }, intervalCount);*/
-            intervalCount += 150;
           } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
             var coin = createBlackCoin('flip-coin');
             $('#' + row + '_' + column).html(coin);
-            /*var flipCoinInterval = setTimeout(function() {
-              $('#' + row + '_' + column).html(coin);
-              clearTimeout(flipCoinInterval);
-            }, intervalCount);*/
-            intervalCount += 150;
           } else {
             $('#' + row + '_' + column).html('error');
           }
