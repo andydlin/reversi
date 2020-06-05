@@ -392,6 +392,7 @@ socket.on('game_update', function(payload) {
   var blacksum = 0;
   var whitesum = 0;
   var row, column;
+  var intervalCount = 150;
   for(row = 0; row < 8; row++) {
     for(column = 0; column < 8; column++) {
       if(board[row][column] == 'b') {
@@ -401,6 +402,8 @@ socket.on('game_update', function(payload) {
       if(board[row][column] == 'w') {
         whitesum++;
       }
+      
+      console.log(intervalCount);
       (function(row, column) {
         /* If a board space has changed */
         if(old_board[row][column] != board[row][column]) {
@@ -425,15 +428,21 @@ socket.on('game_update', function(payload) {
             var coin = createBlackCoin('remove-coin');
             $('#' + row + '_' + column).html(coin);
           } else if(old_board[row][column] == 'w' && board[row][column] == 'b') {
-            var coin = createBlackCoin('flip-coin');
-            setTimeout(function() {
-              $('#' + row + '_' + column).html(coin);
-            }, 150);
-          } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
             var coin = createWhiteCoin('flip-coin');
-            setTimeout(function() {
+            $('#' + row + '_' + column).html(coin);
+            /*var flipCoinInterval = setTimeout(function() {
               $('#' + row + '_' + column).html(coin);
-            }, 150);
+              clearTimeout(flipCoinInterval);
+            }, intervalCount);*/
+            intervalCount += 150;
+          } else if(old_board[row][column] == 'b' && board[row][column] == 'w') {
+            var coin = createBlackCoin('flip-coin');
+            $('#' + row + '_' + column).html(coin);
+            /*var flipCoinInterval = setTimeout(function() {
+              $('#' + row + '_' + column).html(coin);
+              clearTimeout(flipCoinInterval);
+            }, intervalCount);*/
+            intervalCount += 150;
           } else {
             $('#' + row + '_' + column).html('error');
           }
@@ -461,6 +470,22 @@ socket.on('game_update', function(payload) {
       } // end if
     } // end for
   } // end for
+  
+  var flippingAnimation = anime({
+    targets: '.scene.flip-coin .coin',
+    keyframes: [
+      {translateY: -10, rotateY: '.25turn', scale: 1.5},
+      {translateY: 0, rotateY: '.5turn', scale: 1}
+    ],
+    duration: 500,
+    delay: anime.stagger(150),
+    easing: 'easeInElastic(1, .6)'
+  });
+
+  flippingAnimation.finished.then(function() {
+    $('.scene.flip-coin').removeClass('flip-coin');
+  });
+
   $('#blackSum').html(blacksum);
   $('#whiteSum').html(whitesum);
 

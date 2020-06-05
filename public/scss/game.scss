@@ -196,6 +196,7 @@
     grid-template-rows: repeat(8, 1fr);
     margin: 0 auto;
     max-width: calc(100vh - 320px);
+    min-height: 320px;
     min-width: 320px;
     padding: 2px;
 
@@ -279,11 +280,11 @@
         @include prefix(animation, placeCoin 0.15s linear 1, moz webkit);
       }
 
-      &.flip-coin {
+      /*&.flip-coin {
         .coin {
           @include prefix(animation, flipCoin 0.5s ease-in-out 1, moz webkit);
         }
-      }
+      }*/
     } // .scene
   } // #gameBoard
 
